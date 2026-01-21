@@ -1,0 +1,24 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+sqlalchemy
+alembic
+psycopg2-binary
+redis
+celery
+pydantic
+pydantic-settings
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+httpx
+celery[redis]
+apscheduler
+pandas
+scikit-learn
+numpy
+email-validator
+pyjwt
+boto3  # Para uploads S3
+python-dateutil
+cryptography
