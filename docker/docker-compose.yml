@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: nzilacode_control
+      POSTGRES_USER: nzilacode
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nzilacode"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://nzilacode:${DB_PASSWORD:-changeme}@postgres:5432/nzilacode_control
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-here}
+    volumes:
+      - ../uploads:/app/uploads
+      - ../logs:/app/logs
+      - ../ml_models:/app/ml_models
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery-worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://nzilacode:${DB_PASSWORD:-changeme}@postgres:5432/nzilacode_control
+      REDIS_URL: redis://redis:6379/0
+    command: celery -A app.tasks.monitoramento worker --loglevel=info
+    volumes:
+      - ../uploads:/app/uploads
+      - ../logs:/app/logs
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://nzilacode:${DB_PASSWORD:-changeme}@postgres:5432/nzilacode_control
+      REDIS_URL: redis://redis:6379/0
+    command: celery -A app.tasks.monitoramento beat --loglevel=info
+    volumes:
+      - ../logs:/app/logs
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
