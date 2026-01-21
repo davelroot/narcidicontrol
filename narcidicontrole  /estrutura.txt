@@ -1,0 +1,102 @@
+narcidicontrole/
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py                # FastAPI app principal
+│   ├── config.py              # Configurações gerais (DB, JWT, paths)
+│   ├── database/
+│   │    ├── __init__.py
+│   │    ├── session.py        # Session SQLAlchemy
+│   │    ├── base.py           # Base declarative (nzilacode.models + core)
+│   │    └── alembic/          # Migrations (opcional)
+│   │
+│   ├── models/                # Entidades adicionais de controle
+│   │    ├── __init__.py
+│   │    ├── cliente.py        # Cliente, perfil, permissões
+│   │    ├── maquina.py        # Máquinas conectadas
+│   │    ├── licenca.py        # Licenças, assinatura, bloqueios
+│   │    └── upload.py         # Histórico de versões enviadas
+│   │
+│   ├── schemas/               # Pydantic Schemas (DTOs)
+│   │    ├── __init__.py
+│   │    ├── cliente.py
+│   │    ├── maquina.py
+│   │    ├── licenca.py
+│   │    └── upload.py
+│   │
+│   ├── api/                   # Endpoints FastAPI
+│   │    ├── __init__.py
+│   │    ├── cliente_api.py
+│   │    ├── maquina_api.py
+│   │    ├── licenca_api.py
+│   │    └── upload_api.py
+│   │
+│   ├── services/              # Regras de negócio e controlo
+│   │    ├── __init__.py
+│   │    ├── cliente_service.py
+│   │    ├── maquina_service.py
+│   │    ├── licenca_service.py
+│   │    └── upload_service.py
+│   │
+│   ├── events/                # Motor de eventos (IA, alertas, logs)
+│   │    ├── __init__.py
+│   │    ├── licenca_events.py
+│   │    ├── maquina_events.py
+│   │    ├── upload_events.py
+│   │    └── alertas.py
+│   │
+│   ├── utils/                 # Utilitários gerais
+│   │    ├── __init__.py
+│   │    ├── security.py       # JWT, OAuth2, hashing
+│   │    ├── validators.py     # Validações customizadas
+│   │    ├── logger.py         # Logging centralizado
+│   │    └── helpers.py        # Funções auxiliares
+│   │
+│   ├── tasks/                 # Background tasks (Celery/APScheduler)
+│   │    ├── __init__.py
+│   │    ├── monitoramento.py  # Heartbeat, offline, alertas
+│   │    ├── licenca_scheduler.py
+│   │    └── upload_scheduler.py
+│   │
+│   └── core/                  # Core do sistema
+│        ├── __init__.py
+│        └── base_logic.py     # Regras gerais do sistema, integração com nzilacode.models
+│
+├── tests/                     # Testes unitários e de integração
+│   ├── __init__.py
+│   ├── test_cliente.py
+│   ├── test_maquina.py
+│   ├── test_licenca.py
+│   └── test_upload.py
+│
+├── scripts/                   # Scripts administrativos e deploy
+│   ├── init_db.py
+│   ├── seed_data.py
+│   └── upgrade_version.py
+│
+├── docker/                    # Docker e docker-compose
+│   ├── Dockerfile
+│   └── docker-compose.yml
+│
+├── requirements.txt
+├── README.md
+└── .env                       # Configurações sensíveis
+
+
+
+
+Sistema de controle completo SaaS
+Licenças, assinaturas, máquinas, upload de versões
+Monitoramento remoto e bloqueio/ativação, automações e dashboards
+Escalável, modular e compatível com NzilaCode
+FastAPI + SQLAlchemy + PostgreSQL/Redis
+
+Checar licenças expirando
+Checar máquinas offline
+Enviar alertas via email / webhook
+Alimentar Dashboards
+Preparar ML Engine:
+Prever churn de clientes
+Alertar risco de bloqueio
+Sugerir upgrades de assinatura
+Detectar comportamento suspeito
